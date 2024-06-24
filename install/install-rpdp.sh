@@ -34,8 +34,8 @@ echo will leave those things unchanged. So it will *not* undo anything
 echo that is already installed.
 echo 
 echo
-echo For Linux, but will work under Windows 11 with WSL installed too
-echo
+echo For Linux, but will work under Windows 11 with WSL 2 installed too
+echo 
 
 read -p "Set required access privileges to rpdp directory? " yn
 case $yn in
@@ -116,23 +116,26 @@ case $yn in
         sudo apt install -y libsdl2-net-dev
 	sudo apt install -y libvdeplug2
 	sudo apt install -y libpcap-dev
+        # add some additional dependencies missing on standard Ubuntu WSL distros
+        sudo apt install -y lxterminal
+	sudo apt install -y libsdl2-mixer-2.0-0
+        sudo apt install -y libxft2
 	#Most systems do not come with telnet installed, so --
         sudo apt-get install -y telnet
-        #sudo apt-get install -y telnetd
+        # sudo apt-get install -y telnetd
 	# for pdpcontrol: 
-	#sudo apt-get -y install expect
+	# sudo apt-get -y install expect
         # Install screen
-        #sudo apt-get install -y screen
+        # sudo apt-get install -y screen
 	# Install Tilix, used for pdp view
-	#sudo apt -y install tilix
-    #sudo apt -y install dconf-editor dconf-cli
-    #dconf load /com/gexperts/Tilix/ </opt/pidp10/install/pidp10tilix.conf
+	# sudo apt -y install tilix
+        # sudo apt -y install dconf-editor dconf-cli
+        # dconf load /com/gexperts/Tilix/ </opt/pidp10/install/pidp10tilix.conf
         echo "...Done."
         ;;
     [Nn]* ) ;;
         * ) echo "Please answer yes or no.";;
 esac
-
 
 # ---------------------------
 # Modify rpdp.sh and simlac.simh with right hostname and user name
@@ -144,22 +147,27 @@ case $yn in
         while true; do
             echo
             echo ----------------------------------------------------
-            read -p "Hostname of the PiDP-10 ?  " hostnm
-            read -p "User name on the PiDP-10 ? " usernm
+            echo "Do not add .local to the hostname; the script takes care of that."
+            read -p "Hostname of the PiDP-10? " hostnm
+            read -p "User name on the PiDP-10? " usernm
             echo "OK. Host name is $hostnm and user name is $usernm"
             echo ----------------------------------------------------
-            read -p "Correct? (y/n) ? " ynnm
+            read -p "Correct? (y/n) " ynnm
             if [[ "$ynnm" == "Y" || "$ynnm" == "y" ]]; then
-                sed -i "s/^pidpremote=.*/pidpremote=\"$hostnm.local\"/" "/opt/rpdp/bin/rpdp.sh"
+                if [[ "$hostnm" != *"."* ]]; then
+                    hostnm="$hostnm.local"
+                fi
+                sed -i "s/^pidpremote=.*/pidpremote=\"$hostnm\"/" "/opt/rpdp/bin/rpdp.sh"
                 sed -i "s/^piuser=.*/piuser=\"$usernm\"/" "/opt/rpdp/bin/rpdp.sh"
-                sed -i "s/attach -u tty 12345,connect=.*.local:10003;notelnet/attach -u tty 12345,connect=$hostnm.local:10003;notelnet/" /opt/rpdp/bin/imlac.simh
-                break;
+                sed -i "s/attach -u tty 12345,connect=.*.local:10003;notelnet/attach -u tty 12345,connect=$hostnm:10003;notelnet/" /opt/rpdp/bin/imlac.simh
+                break
             fi
         done
         echo "...Done."
         ;;
     [Nn]* ) ;;
-        * ) echo "Please answer yes or no.";;
+    * ) echo "Please answer yes or no." ;;
 esac
 echo "...Done."
+
 
