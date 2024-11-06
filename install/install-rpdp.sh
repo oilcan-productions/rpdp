@@ -2,7 +2,8 @@
 #
 #
 # install script for PiDP-10 rpdp remote terminals
-#
+# install script now installs all the dependencies needed
+# to run the display and teletype emulators
 
 # check this script is NOT run as root
 if [ "$(whoami)" == "root" ]; then
