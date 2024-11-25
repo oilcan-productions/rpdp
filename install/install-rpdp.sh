@@ -114,15 +114,15 @@ case $yn in
         # update first...
         sudo apt-get update
         # for simh:
-	    sudo apt install -y libpcre3
+	sudo apt install -y libpcre3
         sudo apt install -y libsdl2-image-dev
         sudo apt install -y libsdl2-net-dev
-	    sudo apt install -y libvdeplug2
-	    sudo apt install -y libpcap-dev
+	sudo apt install -y libvdeplug2
+	sudo apt install -y libpcap-dev
         sudo apt install -y lxterminal
-	    sudo apt install -y libsdl2-mixer-2.0-0
+	sudo apt install -y libsdl2-mixer-2.0-0
         sudo apt install -y libxft2
-	    #Most systems do not come with telnet installed, so --
+	#Most systems do not come with telnet installed, so --
         sudo apt-get install -y telnet
         #sudo apt-get install -y telnetd
 	# for pdpcontrol: 
