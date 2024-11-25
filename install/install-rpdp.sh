@@ -72,6 +72,7 @@ case $yn in
             echo "...You could compile from source though."
             exit 1
         fi
+        
         echo "...Done."
         echo
         echo "Creating and copying files to \/opt\/rpdp\/bin directory..."
@@ -80,6 +81,7 @@ case $yn in
         fi
         mkdir /opt/rpdp/bin
         cp /opt/rpdp/store-$archi/* /opt/rpdp/bin
+
         echo "Copying dependency sound files."
         mkdir /opt/pidp10/bin
         cp -r /opt/rpdp/install/dependencies/sounds /opt/pidp10/bin
@@ -114,26 +116,23 @@ case $yn in
     [Yy]* ) 
         # update first...
         sudo apt-get update
-        # for simh:
+        # install dependencies for the terminal emulators:
 	    sudo apt install -y libpcre3
+        sudo apt install -y libsdl2-dev
         sudo apt install -y libsdl2-image-dev
         sudo apt install -y libsdl2-net-dev
 	    sudo apt install -y libvdeplug2
 	    sudo apt install -y libpcap-dev
         sudo apt install -y lxterminal
 	    sudo apt install -y libsdl2-mixer-2.0-0
+        sudo apt install -y libsdl2-mixer-dev
         sudo apt install -y libxft2
-	    #Most systems do not come with telnet installed, so --
+        sudo apt install -y libx11-dev
+        sudo apt install -y libsdl2-ttf-dev
+
+	    # Most systems do not come with telnet installed, so --
         sudo apt-get install -y telnet
-        #sudo apt-get install -y telnetd
-	# for pdpcontrol: 
-	#sudo apt-get -y install expect
-        # Install screen
-        #sudo apt-get install -y screen
-	# Install Tilix, used for pdp view
-	#sudo apt -y install tilix
-    #sudo apt -y install dconf-editor dconf-cli
-    #dconf load /com/gexperts/Tilix/ </opt/pidp10/install/pidp10tilix.conf
+
         echo "...Done."
         ;;
     [Nn]* ) ;;
@@ -156,6 +155,7 @@ case $yn in
             echo "OK. Host name is $hostnm and user name is $usernm"
             echo ----------------------------------------------------
             read -p "Correct? (y/n) " ynnm
+            # check if the hostname has .local or is a local name. and append .local if needed. If .local or not a local name use the FQDN specificed.
             if [[ "$ynnm" == "Y" || "$ynnm" == "y" ]]; then
                 if [[ "$hostnm" != *"."* ]]; then
                     hostnm="$hostnm.local"
